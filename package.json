@@ -1,0 +1,29 @@
+{
+  "name": "bgg",
+  "version": "0.1.0",
+  "description": "BoardGameGeek.com API client",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/monteslu/bgg"
+  },
+  "keywords": [
+    "boardgamegeek",
+    "bgg",
+    "xmlapi",
+    "json",
+    "promise"
+  ],
+  "author": "Luis Montes",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/monteslu/bgg/issues"
+  },
+  "dependencies": {
+    "rest": "~1.0.0",
+    "xml2json": "~0.3.2"
+  }
+}
