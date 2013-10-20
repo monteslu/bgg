@@ -15,7 +15,7 @@ npm install bgg
 ```javascript
 var bgg = require('bgg');
 
-bgg({path: 'user', params: {name: 'monteslu', guilds: 1}})
+bgg('user', {name: 'monteslu', guilds: 1})
   .then(funtion(results){
     console.log(results);
   });
