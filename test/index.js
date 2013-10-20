@@ -1,10 +1,3 @@
-var mysqlConfig = {
-  host: 'localhost',
-  user: '',
-  password: '',
-  database: 'test'
-};
-
 var bgg = require('../');
 
 var log = console.log.bind(console);
