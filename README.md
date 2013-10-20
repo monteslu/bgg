@@ -16,7 +16,7 @@ npm install bgg
 var bgg = require('bgg');
 
 bgg('user', {name: 'monteslu', guilds: 1})
-  .then(funtion(results){
+  .then(function(results){
     console.log(results);
   });
 ```
