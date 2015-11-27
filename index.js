@@ -8,13 +8,15 @@ var retryInterceptor = require('rest/interceptor/retry');
 var timeoutInterceptor = require('rest/interceptor/timeout');
 
 module.exports = function(config) {
+
+  var config = config || {};
   
-var restCall = rest
-  .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
-  .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
-  .wrap(errorCodeInterceptor)
-  .wrap(interceptor)
-  .wrap(timeoutInterceptor, { timeout: config.timeout || 5000 });
+  var restCall = rest
+    .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
+    .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
+    .wrap(errorCodeInterceptor)
+    .wrap(interceptor)
+    .wrap(timeoutInterceptor, { timeout: config.timeout || 5000 });
   
   if(config.retry) {
     restCall = restCall.wrap(retryInterceptor, config.retry);

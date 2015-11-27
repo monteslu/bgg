@@ -1,4 +1,4 @@
-var bgg = require('../');
+var bgg = require('../')();
 
 var log = console.log.bind(console);
 var error = console.error.bind(console);
