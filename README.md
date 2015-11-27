@@ -13,8 +13,9 @@ npm install bgg
 ## Usage
 
 ```javascript
+// all options are optional
 var options = {
-  timeout: 10000, // timeout in 10s
+  timeout: 10000, // timeout of 10s (5s is the default)
 
   // see https://github.com/cujojs/rest/blob/master/docs/interceptors.md#module-rest/interceptor/retry
   retry: {
