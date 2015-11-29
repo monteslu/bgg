@@ -3,20 +3,31 @@ var interceptor = require('./interceptor');
 
 var errorCodeInterceptor = require('rest/interceptor/errorCode');
 var pathPrefixInterceptor = require('rest/interceptor/pathPrefix');
-var entityInterceptor = require('rest/interceptor/entity');
 var mimeInterceptor = require('rest/interceptor/mime');
+var retryInterceptor = require('rest/interceptor/retry');
+var timeoutInterceptor = require('rest/interceptor/timeout');
 
-var restCall = rest
-  .chain(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
-  .chain(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
-  .chain(interceptor)
-  .chain(entityInterceptor)
-  .chain(errorCodeInterceptor);
+module.exports = function(config) {
 
-module.exports = function(path, params){
-  var restConfig = {path: path};
-  if(params){
-    restConfig.params = params;
+  var config = config || {};
+  
+  var restCall = rest
+    .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
+    .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
+    .wrap(errorCodeInterceptor)
+    .wrap(interceptor)
+    .wrap(timeoutInterceptor, { timeout: config.timeout || 5000 });
+  
+  if(config.retry) {
+    restCall = restCall.wrap(retryInterceptor, config.retry);
   }
-  return restCall(restConfig);
-};
+  
+  return function(path, params){
+    var restConfig = {path: path};
+    if(params){
+      restConfig.params = params;
+    }
+    return restCall(restConfig);
+  };
+}
+
