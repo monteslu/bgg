@@ -1,10 +1,16 @@
 var interceptor = require('rest/interceptor');
 var parser = require('xml2json');
 
-var parserConfig = {object: true};
+var defaultConfig = {object: true};
 
-module.exports = interceptor({
-  success: function(response, config, client){
-    return parser.toJson(response.entity, parserConfig);
-  }
-});
+var interceptorSetup = function(cfg){
+  var parserConfig = cfg || defaultConfig;
+
+  return interceptor({
+    success: function(response, config, client){
+      return parser.toJson(response.entity, parserConfig);
+    }
+  });
+};
+
+module.exports = interceptorSetup;

@@ -1,5 +1,5 @@
 var rest = require('rest');
-var interceptor = require('./interceptor');
+
 
 var errorCodeInterceptor = require('rest/interceptor/errorCode');
 var pathPrefixInterceptor = require('rest/interceptor/pathPrefix');
@@ -10,18 +10,18 @@ var timeoutInterceptor = require('rest/interceptor/timeout');
 module.exports = function(config) {
 
   var config = config || {};
-  
+  var interceptor = require('./interceptor')(config.interceptorConfig || null);
   var restCall = rest
     .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
     .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
     .wrap(errorCodeInterceptor)
     .wrap(interceptor)
     .wrap(timeoutInterceptor, { timeout: config.timeout || 5000 });
-  
+
   if(config.retry) {
     restCall = restCall.wrap(retryInterceptor, config.retry);
   }
-  
+
   return function(path, params){
     var restConfig = {path: path};
     if(params){
@@ -30,4 +30,3 @@ module.exports = function(config) {
     return restCall(restConfig);
   };
 }
-
