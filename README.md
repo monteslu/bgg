@@ -24,7 +24,7 @@ var options = {
     max: 15e3
   },
 
-  interceptorConfig: {object: true, sanitize: false} //Optional xml2json.toJSON options
+  toJSONConfig: {object: true, sanitize: false} //Optional xml2json.toJSON options
 }
 
 var bgg = require('bgg')(options);

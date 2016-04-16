@@ -10,7 +10,7 @@ var timeoutInterceptor = require('rest/interceptor/timeout');
 module.exports = function(config) {
 
   var config = config || {};
-  var interceptor = require('./interceptor')(config.interceptorConfig || null);
+  var interceptor = require('./interceptor')(config.toJSONConfig || null);
   var restCall = rest
     .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
     .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
