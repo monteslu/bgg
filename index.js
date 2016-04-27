@@ -7,9 +7,9 @@ var mimeInterceptor = require('rest/interceptor/mime');
 var retryInterceptor = require('rest/interceptor/retry');
 var timeoutInterceptor = require('rest/interceptor/timeout');
 
-module.exports = function(config) {
+module.exports = function(_config) {
 
-  var config = config || {};
+  var config = _config || {};
   var interceptor = require('./interceptor')(config.toJSONConfig || null);
   var restCall = rest
     .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
