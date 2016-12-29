@@ -12,7 +12,7 @@ module.exports = function(config) {
   var config = config || {};
   
   var restCall = rest
-    .wrap(pathPrefixInterceptor, { prefix: 'http://www.boardgamegeek.com/xmlapi2/'})
+    .wrap(pathPrefixInterceptor, { prefix: 'https://www.boardgamegeek.com/xmlapi2/'})
     .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
     .wrap(errorCodeInterceptor)
     .wrap(interceptor)
