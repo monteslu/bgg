@@ -22,7 +22,9 @@ var options = {
     initial: 100,
     multiplier: 2,
     max: 15e3
-  }
+  },
+
+  toJSONConfig: {object: true, sanitize: false} //Optional xml2json.toJSON options
 }
 
 var bgg = require('bgg')(options);
