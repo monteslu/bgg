@@ -32,3 +32,7 @@ bgg('user', {name: 'monteslu', guilds: 1})
     console.log(results);
   });
 ```
+
+## alternatives
+checkout [bgg-sdk](https://github.com/ColCross/bgg-sdk) by [ColCross](https://github.com/ColCross)
+
