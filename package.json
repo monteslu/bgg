@@ -11,7 +11,8 @@
     "index.js"
   ],
   "scripts": {
-    "test": "node --test test/"
+    "test": "vitest run",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -32,5 +33,10 @@
   "homepage": "https://github.com/monteslu/bgg#readme",
   "dependencies": {
     "fast-xml-parser": "^4.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "vitest": "^2.0.0"
   }
 }
