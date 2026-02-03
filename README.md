@@ -1,38 +1,80 @@
 # BGG
 
-A promises aware boardgamegeek.com API client.
+[![npm version](https://img.shields.io/npm/v/bgg.svg)](https://www.npmjs.com/package/bgg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Will support any of the commands available in the [BGG XMLAPI2 documentation](http://boardgamegeek.com/wiki/page/BGG_XML_API2)
+A modern BoardGameGeek.com API client for Node.js.
 
-## install
+Supports the [BGG XML API2](https://boardgamegeek.com/wiki/page/BGG_XML_API2).
 
-`
+## Install
+
+```bash
 npm install bgg
-`
+```
+
+Requires Node.js 18+ (uses native fetch).
 
 ## Usage
 
 ```javascript
-// all options are optional
-var options = {
-  timeout: 10000, // timeout of 10s (5s is the default)
+import createClient from 'bgg';
 
-  // see https://github.com/cujojs/rest/blob/master/docs/interceptors.md#module-rest/interceptor/retry
-  retry: {
-    initial: 100,
-    multiplier: 2,
-    max: 15e3
-  }
-}
+const bgg = createClient({
+  timeout: 10000,  // 10s timeout (default: 10s)
+  retries: 2       // retry failed requests (default: 0)
+});
 
-var bgg = require('bgg')(options);
+// Get user info
+const user = await bgg('user', { name: 'monteslu', guilds: 1 });
+console.log(user);
 
-bgg('user', {name: 'monteslu', guilds: 1})
-  .then(function(results){
-    console.log(results);
-  });
+// Search for games
+const results = await bgg('search', { query: 'catan', type: 'boardgame' });
+console.log(results);
+
+// Get game details
+const game = await bgg('thing', { id: 13, stats: 1 });
+console.log(game);
 ```
 
-## alternatives
-checkout [bgg-sdk](https://github.com/ColCross/bgg-sdk) by [ColCross](https://github.com/ColCross)
+## CommonJS
 
+```javascript
+const createClient = require('bgg').default;
+const bgg = createClient();
+```
+
+## API
+
+### `createClient(options)`
+
+Creates a BGG API client.
+
+**Options:**
+- `timeout` (number) - Request timeout in ms (default: 10000)
+- `retries` (number) - Number of retry attempts (default: 0)
+
+### `bgg(endpoint, params)`
+
+Makes a request to the BGG XML API2.
+
+**Endpoints:** `thing`, `family`, `search`, `collection`, `user`, `plays`, `guild`, `forum`, `thread`, `hot`, etc.
+
+See [BGG XML API2 docs](https://boardgamegeek.com/wiki/page/BGG_XML_API2) for all endpoints and parameters.
+
+## v2.0 Breaking Changes
+
+- Now requires Node.js 18+ (uses native fetch)
+- ES modules by default (use `.default` for CommonJS)
+- Replaced `xml2json` with `fast-xml-parser` (no native dependencies)
+- Removed `rest` library dependency
+- Simplified retry config (just `retries: number`)
+
+## Alternatives
+
+- [bgg-sdk](https://github.com/ColCross/bgg-sdk) - TypeScript SDK with typed responses
+
+## License
+
+MIT
