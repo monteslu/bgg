@@ -1,33 +1,54 @@
-var rest = require('rest');
-var interceptor = require('./interceptor');
+import { XMLParser } from 'fast-xml-parser';
 
-var errorCodeInterceptor = require('rest/interceptor/errorCode');
-var pathPrefixInterceptor = require('rest/interceptor/pathPrefix');
-var mimeInterceptor = require('rest/interceptor/mime');
-var retryInterceptor = require('rest/interceptor/retry');
-var timeoutInterceptor = require('rest/interceptor/timeout');
+const parser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  textNodeName: '_text'
+});
 
-module.exports = function(config) {
+const BGG_API = 'https://api.geekdo.com/xmlapi2/';
 
-  var config = config || {};
+export default function createClient(config = {}) {
+  const timeout = config.timeout || 10000;
+  const retries = config.retries || 0;
 
-  var restCall = rest
-    .wrap(pathPrefixInterceptor, { prefix: 'https://api.geekdo.com/xmlapi2/'})
-    .wrap(mimeInterceptor, {mime:'text/xml', accept: 'text/xml'})
-    .wrap(errorCodeInterceptor)
-    .wrap(interceptor)
-    .wrap(timeoutInterceptor, { timeout: config.timeout || 5000 });
+  async function request(path, params, attempt = 0) {
+    const url = new URL(path, BGG_API);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.set(key, value);
+        }
+      });
+    }
 
-  if(config.retry) {
-    restCall = restCall.wrap(retryInterceptor, config.retry);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: { 'Accept': 'text/xml' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`BGG API error: ${response.status} ${response.statusText}`);
+      }
+
+      const xml = await response.text();
+      return parser.parse(xml);
+    } catch (err) {
+      if (attempt < retries) {
+        return request(path, params, attempt + 1);
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 
-  return function(path, params){
-    var restConfig = {path: path};
-    if(params){
-      restConfig.params = params;
-    }
-    return restCall(restConfig);
-  };
+  return request;
 }
 
+// Named export for ESM
+export { createClient };
