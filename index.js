@@ -31,6 +31,16 @@ export default function createClient(config = {}) {
         headers: { 'Accept': 'text/xml' }
       });
 
+      // Handle 202 Accepted - BGG queues collection requests
+      // Return a special object so callers can detect and retry
+      if (response.status === 202) {
+        return {
+          _queued: true,
+          _status: 202,
+          _message: 'Request queued by BGG. Retry after a short delay.'
+        };
+      }
+
       if (!response.ok) {
         throw new Error(`BGG API error: ${response.status} ${response.statusText}`);
       }
